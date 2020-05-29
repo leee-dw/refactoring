@@ -2,11 +2,15 @@ const invoices = require('./invoices.json')
 const plays = require('./plays.json')
 
 function statement(invoice, plays) {
-  return renderPlainText(invoice, plays)
+  const statementData = {}
+  statementData.customer = invoices.customer // 고객 데이터를 중간 데이터로 옮김
+  statementData.performances = invoices.performances // 고객 데이터를 중간 데이터로 옮김
+  return renderPlainText(statementData, invoice, plays) // 중간 데이터 구조를 인수로 전달
 }
 
-function renderPlainText(invoice, plays) {
-  let result = `청구 내역 (고객명: ${invoice.customer})\n`
+function renderPlainText(data, invoice, plays) {
+  // 중간 데이터 구조를 인수로 전달
+  let result = `청구 내역 (고객명: ${data.customer})\n` // 고객 데이터를 중간 데이터로 옮김
 
   for (let perf of invoice.performances) {
     result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${
