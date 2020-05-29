@@ -4,5 +4,6 @@
   "main": "index.js",
   "repository": "https://github.com/leee-dw/refactoring.git",
   "author": "leee-dw <dylan.dw.lee@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }
