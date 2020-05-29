@@ -6,7 +6,8 @@ function statement(invoice, plays) {
     return plays[aPerformance.playId]
   }
 
-  function amountFor(aPerformance, play) {
+  function amountFor(aPerformance) {
+    // 필요 없어진 매개변수 제거
     let result = 0
     switch (
       playFor(aPerformance).type // play를 playFor() 호출로 변경
@@ -44,8 +45,7 @@ function statement(invoice, plays) {
   }).format
 
   for (let perf of invoice.performances) {
-    // const play = playFor(perf) // 인라인 된 변수는 제거
-    let thisAmount = amountFor(perf, playFor(perf))
+    let thisAmount = amountFor(perf) // 필요 없어진 매개변수 제거
 
     // 포인트를 적립한다.
     volumeCredits += Math.max(perf.audience - 30, 0)
