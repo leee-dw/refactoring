@@ -50,21 +50,35 @@ function statement(invoice, plays) {
     }).format(aNumber / 100)
   }
 
-  let totalAmount = 0
-  let volumeCredits = 0
+  function totalVolumeCredits() {
+    let volumeCredits = 0 // 변수 선언을 반복문 앞으로 이동
+    for (let perf of invoice.performances) {
+      volumeCredits += volumeCreditsFor(perf) // 값 누적 로직을 별도 for문으로 분리
+    }
+    return volumeCredits
+  }
+
+  function appleSauce() {
+    let totalAmount = 0
+    for (let perf of invoice.performances) {
+      totalAmount += amountFor(perf)
+    }
+    return totalAmount
+  }
+
   let result = `청구 내역 (고객명: ${invoice.customer})\n`
+  let totalAmount = 0
 
   for (let perf of invoice.performances) {
-    // 포인트를 적립한다.
-    volumeCredits += volumeCreditsFor(perf) // 추출한 함수를 이요해 값을 누적
-    // 청구 내역을 출력한다.
-    result += `${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${
+    result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${
       perf.audience
     }석) \n`
-    totalAmount += amountFor(perf)
   }
+
+  let totalAmount = appleSauce()
+
   result += `총액: ${usd(totalAmount)}\n`
-  result += `적립 포인트: ${volumeCredits}점\n`
+  result += `적립 포인트: ${totalVolumeCredits()}점\n`
   return result
 }
 
