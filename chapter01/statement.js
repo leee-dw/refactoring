@@ -2,10 +2,6 @@ const invoices = require('./invoices.json')
 const plays = require('./plays.json')
 
 function statement(invoice, plays) {
-  function playFor(aPerformance) {
-    return plays[aPerformance.playId]
-  }
-
   function amountFor(aPerformance) {
     // 필요 없어진 매개변수 제거
     let result = 0
@@ -33,6 +29,18 @@ function statement(invoice, plays) {
     }
     return result
   }
+  function playFor(aPerformance) {
+    return plays[aPerformance.playId]
+  }
+
+  function volumeCredits(aPerformance) {
+    let result = 0
+    result += Math.max(aPerformance.audience - 30, 0)
+    if ('comedy' === playFor(aPerformance).type) {
+      result += Math.floor(aPerformance.audience / 5)
+    }
+    return result
+  }
 
   let totalAmount = 0
   let volumeCredits = 0
@@ -45,23 +53,13 @@ function statement(invoice, plays) {
   }).format
 
   for (let perf of invoice.performances) {
-    let thisAmount = amountFor(perf) // 필요 없어진 매개변수 제거
-
     // 포인트를 적립한다.
-    volumeCredits += Math.max(perf.audience - 30, 0)
-
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === playFor(perf).type) {
-      // 변수 인라인
-      volumeCredits += Math.floor(perf.audience / 5)
-    }
-
+    volumeCredits += volumeCredits(perf) // 추출한 함수를 이요해 값을 누적
     // 청구 내역을 출력한다.
-    result += `${playFor(perf).name}: ${format(thisAmount / 100)} (${
-      // 변수 인라인
+    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
       perf.audience
     }석) \n`
-    totalAmount += thisAmount
+    totalAmount += amountFor(perf)
   }
   result += `총액: ${format(totalAmount / 100)}\n`
   result += `적립 포인트: ${volumeCredits}점\n`
