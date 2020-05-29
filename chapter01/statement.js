@@ -2,6 +2,10 @@ const invoices = require('./invoices.json')
 const plays = require('./plays.json')
 
 function statement(invoice, plays) {
+  function playFor(aPerformance) {
+    return plays[aPerformance.playId]
+  }
+
   function amountFor(aPerformance, play) {
     let result = 0
     switch (play.type) {
@@ -38,7 +42,7 @@ function statement(invoice, plays) {
   }).format
 
   for (let perf of invoice.performances) {
-    const play = plays[perf.playId]
+    const play = playFor(perf) // 우변을 함수로 추출
     let thisAmount = amountFor(perf, play)
 
     // 포인트를 적립한다.
