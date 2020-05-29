@@ -33,7 +33,7 @@ function statement(invoice, plays) {
     return plays[aPerformance.playId]
   }
 
-  function volumeCredits(aPerformance) {
+  function volumeCreditsFor(aPerformance) {
     let result = 0
     result += Math.max(aPerformance.audience - 30, 0)
     if ('comedy' === playFor(aPerformance).type) {
@@ -42,26 +42,28 @@ function statement(invoice, plays) {
     return result
   }
 
+  function usd(aNumber) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(aNumber / 100)
+  }
+
   let totalAmount = 0
   let volumeCredits = 0
   let result = `청구 내역 (고객명: ${invoice.customer})\n`
 
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format
-
   for (let perf of invoice.performances) {
     // 포인트를 적립한다.
-    volumeCredits += volumeCredits(perf) // 추출한 함수를 이요해 값을 누적
+    volumeCredits += volumeCreditsFor(perf) // 추출한 함수를 이요해 값을 누적
     // 청구 내역을 출력한다.
-    result += `${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
+    result += `${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${
       perf.audience
     }석) \n`
     totalAmount += amountFor(perf)
   }
-  result += `총액: ${format(totalAmount / 100)}\n`
+  result += `총액: ${usd(totalAmount)}\n`
   result += `적립 포인트: ${volumeCredits}점\n`
   return result
 }
