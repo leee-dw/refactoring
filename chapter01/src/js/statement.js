@@ -51,6 +51,10 @@ function renderPlainText(data, plays) {
   return result
 }
 
+function htmlStatement(invoice, plays) {
+  return renderHTML(createStatementData(invoice, plays))
+}
+
 function renderHTML(data) {
   let result = `<h1>청구 내역 (고객명: ${data.customer})\n</h1>`
 
